@@ -69,10 +69,10 @@ solve :: [String] -> [String] -> [Dice]
 solve faces dictionary =
 	let dice = toDice faces
 	    links = getLinks dice
-	    trie = fromWords dictionary
+	    trie = newTrie dictionary
 	in solve' dice links "" trie
 
-solve' :: Dice -> [Link] -> String -> [Trie] -> [Dice]
+solve' :: Dice -> [Link] -> String -> [Trie Char] -> [Dice]
 solve' _ _ _ [] = []
 solve' ds ls cw ((Trie isWord c subTries):otherTries) =
 	let cw' = cw ++ [c]

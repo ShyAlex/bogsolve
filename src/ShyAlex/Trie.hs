@@ -1,16 +1,21 @@
 module ShyAlex.Trie
 (Trie(..)
-,fromWords
+,newTrie
 ) where
 
 import Data.List(groupBy)
 
-data Trie = Trie Bool Char [Trie] deriving(Show)
+data Trie a = Trie Bool a [Trie a] deriving(Show)
 
-fromWords :: [String] -> [Trie]
-fromWords ws =
-	map groupToTrie $ groupBy sameInitial ws
-	where sameInitial x y | x == [] = False
-	                      | y == [] = False
-	                      | otherwise = head x == head y
-	      groupToTrie g = Trie (any (\ w -> length w == 1) g) (head $ head g) (fromWords $ filter (/= []) $ map tail g)
+sameHead :: Eq a => [a] -> [a] -> Bool
+sameHead [] _ = False
+sameHead _ [] = False
+sameHead (x:_) (y:_) = x == y 
+
+newTrie :: Eq a => [[a]] -> [Trie a]
+newTrie =
+	let terminatesHere = any $ (== 1) . length
+	    getTrieItem = head . head
+	    getSubTries = newTrie . filter (/= []) . map tail
+	    groupToTrie g = Trie (terminatesHere g) (getTrieItem g) (getSubTries g)
+	in map groupToTrie . groupBy sameHead
