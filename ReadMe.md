@@ -16,8 +16,8 @@ How?
 
 You'll need:
 
-    - [A Haskell compiler](http://hackage.haskell.org/platform).
-    - A dictionary (a file containing words in plain text, each on a seperate line) like [this one](http://www.freebsd.org/cgi/cvsweb.cgi/src/share/dict/web2).
+  - [A Haskell compiler](http://hackage.haskell.org/platform).
+  - A dictionary (a file containing words in plain text, each on a seperate line) like [this one](http://www.freebsd.org/cgi/cvsweb.cgi/src/share/dict/web2).
 
 Compile it by getting the source and running (from the source root):
 
@@ -26,7 +26,7 @@ Compile it by getting the source and running (from the source root):
 
 Then run it using the following:
 
-    bogsolve *pathToDictionary* *boggleGrid*
+    bogsolve pathToDictionary boggleGrid
 
 E.g.
 
