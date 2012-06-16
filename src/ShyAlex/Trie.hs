@@ -3,7 +3,7 @@ module ShyAlex.Trie
 ,fromWords
 ) where
 
-import Data.List
+import Data.List(groupBy)
 
 data Trie = Trie Bool Char [Trie] deriving(Show)
 
@@ -13,4 +13,4 @@ fromWords ws =
 	where sameInitial x y | x == [] = False
 	                      | y == [] = False
 	                      | otherwise = head x == head y
-	      groupToTrie g = Trie (any (\ w -> length w == 1) g) (head $ head g) (fromWords $ filter (/= []) $ map tail g)	
+	      groupToTrie g = Trie (any (\ w -> length w == 1) g) (head $ head g) (fromWords $ filter (/= []) $ map tail g)
