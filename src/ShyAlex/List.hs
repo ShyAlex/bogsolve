@@ -14,9 +14,5 @@ removeAt 0 (x:xs) = xs
 removeAt i (x:xs) = x : removeAt (i - 1) xs
 
 groupN :: Int -> [a] -> [[a]]
-groupN i l = groupN' i 0 l [[]]
-
-groupN' :: Int -> Int -> [a] -> [[a]] -> [[a]]
-groupN' _ _ [] acc = acc
-groupN' i i' (x:xs) (ys:yss) | i' < i = groupN' i (i' + 1) xs $ (x : ys) : yss
-	                         | otherwise = groupN' i 1 xs $ [x] : ys : yss
+groupN _ [] = []
+groupN i l = let (grp, l') = splitAt i l in grp : (groupN i l')
