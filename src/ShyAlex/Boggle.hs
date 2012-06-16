@@ -20,8 +20,16 @@ data Link = Link { fromDie :: Die
                  , toDie :: Die
                  } deriving (Eq, Show)
 
-toDice :: [[String]] -> Dice
-toDice = toDice' 0
+getWord :: Dice -> String
+getWord ds = concat $ map face ds
+
+getPoints :: String -> Int
+getPoints word =
+	let points = [ 0, 0, 0, 1, 1, 2, 3, 5 ] ++ repeat 11
+	in points !! length word
+
+toDice :: [String] -> Dice
+toDice = toDice' 0 . groupN 4
 
 toDice' :: Int -> [[String]] -> Dice
 toDice' _ [] = []
@@ -57,12 +65,9 @@ getRoutes letters availableDice activeLinks = do
 	subDice <- getRoutes letters' availableDice' activeLinks'
 	return $ die : subDice
 
-getWord :: Dice -> String
-getWord ds = concat $ map face ds
-
 solve :: [String] -> [String] -> [Dice]
 solve faces dictionary =
-	let dice = toDice $ groupN 4 faces
+	let dice = toDice faces
 	    links = getLinks dice
 	    trie = fromWords dictionary
 	in solve' dice links "" trie
@@ -75,8 +80,3 @@ solve' ds ls cw ((Trie isWord c subTries):otherTries) =
 	in if sols == [] 
 	   then solve' ds ls cw otherTries
 	   else (if isWord then sols else []) ++ solve' ds ls cw' subTries ++ solve' ds ls cw otherTries
-
-getPoints :: String -> Int
-getPoints word =
-	let points = [ 0, 0, 0, 1, 1, 2, 3, 5 ] ++ repeat 11
-	in points !! length word
