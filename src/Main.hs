@@ -1,3 +1,4 @@
+import Data.Char(toLower)
 import Data.List(group, intersperse, sort)
 import ShyAlex.Boggle
 import System.Environment(getArgs)
@@ -12,7 +13,7 @@ getDiceRoutes (ds:dss) = do
 
 main = do
     (dictionaryFile : faces) <- getArgs
-    dictionary <- fmap (sort . lines) $ readFile dictionaryFile
+    dictionary <- fmap (sort . map (map toLower) . lines) $ readFile dictionaryFile
     let solution = solve faces dictionary
         pointsString = show $ foldl (+) 0 $ map (getPoints . head) $ group $ map getWord solution
     mapM putStrLn $ getDiceRoutes solution
