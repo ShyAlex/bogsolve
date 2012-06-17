@@ -4,6 +4,7 @@ module ShyAlex.Boggle
 ,getPoints
 ,getWord
 ,solve
+,toDice
 ) where
 
 import Data.List(delete)
@@ -51,10 +52,9 @@ getRoutes letters availableDice activeDice = do
 	subDice <- getRoutes letters' availableDice' activeDice'
 	return $ die : subDice
 
-solve :: [String] -> [String] -> [Dice]
-solve faces dictionary =
-	let dice = toDice faces
-	    trie = newTrie dictionary
+solve :: Dice -> [String] -> [Dice]
+solve dice dictionary =
+	let trie = newTrie dictionary
 	in solve' dice "" trie
 
 solve' :: Dice -> String -> [Trie Char] -> [Dice]

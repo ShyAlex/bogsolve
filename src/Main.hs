@@ -14,7 +14,8 @@ getDiceRoutes (ds:dss) = do
 main = do
     (dictionaryFile : faces) <- getArgs
     dictionary <- fmap (sort . map (map toLower) . lines) $ readFile dictionaryFile
-    let solution = solve (map (map toLower) faces) dictionary
+    let dice = toDice (map (map toLower) faces)
+        solution = solve dice dictionary
         pointsString = show $ foldl (+) 0 $ map (getPoints . head) $ group $ map getWord solution
     mapM putStrLn $ getDiceRoutes solution
     putStrLn $ "Available points: " ++ pointsString
