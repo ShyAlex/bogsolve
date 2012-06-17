@@ -1,9 +1,13 @@
 module ShyAlex.List
 (groupN
-,mapi) where
+,mapi
+,padr) where
 
 mapi :: (Int -> a -> b) -> [a] -> [b]
 mapi f = zipWith f [0..]
+
+padr :: Int -> a -> [a] -> [a]
+padr n x xs = xs ++ replicate (n - length xs) x
 
 groupN :: Int -> [a] -> [[a]]
 groupN _ [] = []
