@@ -6,6 +6,7 @@ module ShyAlex.Boggle
 ,solve
 ) where
 
+import Data.List(delete)
 import ShyAlex.List
 import ShyAlex.Trie
 
@@ -15,10 +16,6 @@ data Die = Die { x :: Int
                , y :: Int
                , face :: String
                } deriving (Eq, Show)
-
-data Link = Link { fromDie :: Die
-                 , toDie :: Die
-                 } deriving (Eq, Show)
 
 getWord :: Dice -> String
 getWord ds = concat $ map face ds
@@ -44,39 +41,27 @@ isNeighbour (Die x y _) (Die x' y' _) =
 	    dy = abs $ y - y'
 	in (dx == 1 && dy <= 1) || (dy == 1 && dx <= 1)
 
-getLinks :: Dice -> [Link]
-getLinks dice =
-	concat $ map getDieLinks dice
-	where getDieLinks d = map (\ d' -> Link d d') $ filter (isNeighbour d) dice
-
-getLinksFrom :: Die -> [Link] -> [Link]
-getLinksFrom d = filter (\ (Link f _) -> f == d)
-
-removeLinksTo :: Die -> [Link] -> [Link]
-removeLinksTo d = filter (\ (Link _ t) -> t /= d)
-
-getRoutes :: String -> Dice -> [Link] -> [Dice]
+getRoutes :: String -> Dice -> Dice -> [Dice]
 getRoutes [] _ _ = return []
-getRoutes letters availableDice activeLinks = do
-	die <- filter (\ (Die _ _ f) -> take (length f) letters == f) $ availableDice
-	let activeLinks' = removeLinksTo die activeLinks
-	    availableDice' = map toDie $ getLinksFrom die activeLinks'
+getRoutes letters availableDice activeDice = do
+	die <- filter (\ (Die _ _ f) -> take (length f) letters == f) availableDice
+	let activeDice' = delete die activeDice
+	    availableDice' = filter (isNeighbour die) activeDice'
 	    letters' = drop (length $ face die) letters
-	subDice <- getRoutes letters' availableDice' activeLinks'
+	subDice <- getRoutes letters' availableDice' activeDice'
 	return $ die : subDice
 
 solve :: [String] -> [String] -> [Dice]
 solve faces dictionary =
 	let dice = toDice faces
-	    links = getLinks dice
 	    trie = newTrie dictionary
-	in solve' dice links "" trie
+	in solve' dice "" trie
 
-solve' :: Dice -> [Link] -> String -> [Trie Char] -> [Dice]
-solve' _ _ _ [] = []
-solve' ds ls cw ((Trie isWord c subTries):otherTries) =
+solve' :: Dice -> String -> [Trie Char] -> [Dice]
+solve' _ _ [] = []
+solve' ds cw ((Trie isWord c subTries):otherTries) =
 	let cw' = cw ++ [c]
-	    sols = getRoutes cw' ds ls
-	in if sols == [] 
-	   then solve' ds ls cw otherTries
-	   else (if isWord then sols else []) ++ solve' ds ls cw' subTries ++ solve' ds ls cw otherTries
+	    sols = getRoutes cw' ds ds
+	in (if isWord then sols else []) ++ 
+           (if sols /= [] then solve' ds cw' subTries else []) ++ 
+           (solve' ds cw otherTries)
