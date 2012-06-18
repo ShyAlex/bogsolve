@@ -7,9 +7,8 @@ module ShyAlex.Boggle
 ,toDice
 ) where
 
-import Data.List(delete, group, sort)
+import Data.List(delete, group, sortBy)
 import ShyAlex.List
-import ShyAlex.Trie
 
 type Dice = [Die]
 
@@ -42,27 +41,18 @@ isNeighbour (Die x y _) (Die x' y' _) =
 	    dy = abs $ y - y'
 	in (dx == 1 && dy <= 1) || (dy == 1 && dx <= 1)
 
-getRoutes :: String -> Dice -> Dice -> [Dice]
-getRoutes [] _ _ = return []
-getRoutes letters availableDice activeDice = do
-	die <- filter (\ (Die _ _ f) -> take (length f) letters == f) availableDice
-	let activeDice' = delete die activeDice
-	    availableDice' = filter (isNeighbour die) activeDice'
-	    letters' = drop (length $ face die) letters
-	subDice <- getRoutes letters' availableDice' activeDice'
-	return $ die : subDice
-
 solve :: Dice -> [String] -> [Dice]
-solve dice dictionary =
-	let uniqueFaces = map head $ group $ sort $ map face dice
-	    trie = newTrie uniqueFaces dictionary
-	in solve' dice "" trie
+solve dice dictionary = sortBy (\ ds1 ds2 -> compare (getWord ds1) (getWord ds2)) $ solve' [] dice dice dictionary
 
-solve' :: Dice -> String -> [Trie] -> [Dice]
-solve' _ _ [] = []
-solve' ds cw ((Trie isWord chars subTries):otherTries) =
-	let cw' = cw ++ chars
-	    sols = getRoutes cw' ds ds
-	in (if isWord then sols else []) ++
-       (if sols == [] then [] else solve' ds cw' subTries) ++
-       (solve' ds cw otherTries)
+solve' :: Dice -> Dice -> Dice -> [String] -> [Dice]
+solve' wordDice availableDice activeDice dictionary = do
+	die <- availableDice
+	let dieFace = face die
+	    activeDice' = delete die activeDice
+	    availableDice' = filter (isNeighbour die) activeDice'
+	    wordDice' = wordDice ++ [die]
+	    dictionary' = map (drop $ length dieFace) $ filter (startsWith dieFace) dictionary
+	    isWord = any (== []) dictionary'
+	    dictionary'' = filter (/= []) dictionary'
+	    subDices = if dictionary'' /= [] && availableDice' /= [] then solve' wordDice' availableDice' activeDice' dictionary'' else []
+	if isWord then wordDice' : subDices else subDices

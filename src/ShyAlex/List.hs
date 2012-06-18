@@ -15,4 +15,4 @@ groupN _ [] = []
 groupN i l = let (grp, l') = splitAt i l in grp : (groupN i l')
 
 startsWith :: Eq a => [a] -> [a] -> Bool
-startsWith xs ys = all id $ zipWith (==) xs ys
+startsWith xs ys = (length xs <= length ys) && (all id $ zipWith (==) xs ys)
