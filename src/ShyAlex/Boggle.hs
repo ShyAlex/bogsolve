@@ -62,6 +62,6 @@ solve' _ _ [] = []
 solve' ds cw ((Trie isWord c subTries):otherTries) =
 	let cw' = cw ++ [c]
 	    sols = getRoutes cw' ds ds
-	in (if isWord then sols else []) ++ 
-           (if sols /= [] then solve' ds cw' subTries else []) ++ 
-           (solve' ds cw otherTries)
+	in (if isWord then sols else []) ++
+       (solve' ds cw' subTries) ++
+       (solve' ds cw otherTries)
