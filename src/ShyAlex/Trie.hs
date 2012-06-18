@@ -4,18 +4,13 @@ module ShyAlex.Trie
 ) where
 
 import Data.List(groupBy)
+import ShyAlex.List(startsWith)
 
-data Trie a = Trie Bool a [Trie a] deriving(Show)
+data Trie = Trie Bool String [Trie] | NullTrie deriving(Show)
 
-sameHead :: Eq a => [a] -> [a] -> Bool
-sameHead [] _ = False
-sameHead _ [] = False
-sameHead (x:_) (y:_) = x == y 
-
-newTrie :: Eq a => [[a]] -> [Trie a]
-newTrie =
-	let terminatesHere = any $ (== 1) . length
-	    getTrieItem = head . head
-	    getSubTries = newTrie . filter (/= []) . map tail
-	    groupToTrie g = Trie (terminatesHere g) (getTrieItem g) (getSubTries g)
-	in map groupToTrie . groupBy sameHead
+newTrie :: [String] -> [String] -> [Trie]
+newTrie allowedNodes dicWords = do
+	nodeTag <- allowedNodes
+	let nodeWords = map (drop (length nodeTag)) $ filter (startsWith nodeTag) dicWords
+	if nodeWords == [] then []
+	else return $ Trie (any (== []) nodeWords) nodeTag (newTrie allowedNodes $ filter (/= []) nodeWords)

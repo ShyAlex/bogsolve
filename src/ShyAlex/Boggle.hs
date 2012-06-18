@@ -7,7 +7,7 @@ module ShyAlex.Boggle
 ,toDice
 ) where
 
-import Data.List(delete)
+import Data.List(delete, group, sort)
 import ShyAlex.List
 import ShyAlex.Trie
 
@@ -54,14 +54,15 @@ getRoutes letters availableDice activeDice = do
 
 solve :: Dice -> [String] -> [Dice]
 solve dice dictionary =
-	let trie = newTrie dictionary
+	let uniqueFaces = map head $ group $ sort $ map face dice
+	    trie = newTrie uniqueFaces dictionary
 	in solve' dice "" trie
 
-solve' :: Dice -> String -> [Trie Char] -> [Dice]
+solve' :: Dice -> String -> [Trie] -> [Dice]
 solve' _ _ [] = []
-solve' ds cw ((Trie isWord c subTries):otherTries) =
-	let cw' = cw ++ [c]
+solve' ds cw ((Trie isWord chars subTries):otherTries) =
+	let cw' = cw ++ chars
 	    sols = getRoutes cw' ds ds
 	in (if isWord then sols else []) ++
-       (solve' ds cw' subTries) ++
+       (if sols == [] then [] else solve' ds cw' subTries) ++
        (solve' ds cw otherTries)
