@@ -12,22 +12,27 @@ getGridStrings allDice wordDice =
         groupedFaces = groupN 4 paddedFaces
     in map concat groupedFaces
 
-getRouteString :: Dice -> String
-getRouteString ds =
+getRouteStrings :: Dice -> [String]
+getRouteStrings ds =
     let route = concat $ intersperse " -> " $ map dieToStr ds
         wordStr = getWord ds
         pointsStr = show $ getPoints wordStr
-    in wordStr ++ " (" ++ pointsStr ++ " points) : " ++ route
+        unpaddedResult = [ wordStr, pointsStr ++ " point(s)", route ]
+        maxLineWidth = maximum $ map length unpaddedResult
+    in map (padr maxLineWidth ' ') unpaddedResult
     where dieToStr (Die x y f) = f ++ " (" ++ show x ++ ", " ++ show y ++ ")"
 
 printGrid :: Dice -> Dice -> IO ()
 printGrid allDice wordDice = do
-    let (g:gs) = getGridStrings allDice wordDice
-        routeString = getRouteString wordDice
-        topLine = routeString ++ "    " ++ g
-        otherLines = map (replicate (length routeString + 4) ' ' ++) gs
-    putStrLn topLine
-    mapM putStrLn otherLines
+    let routeStrings = getRouteStrings wordDice 
+        gridStrings = getGridStrings allDice wordDice
+        outputHeight = maximum $ map length [ routeStrings, gridStrings ]
+        emptyRouteLine = map (\_ -> ' ') $ head routeStrings    
+        emptyGridLine = map (\_ -> ' ') $ head gridStrings
+        finalRouteStrings = padr outputHeight emptyRouteLine routeStrings
+        finalGridStrings = padr outputHeight emptyGridLine gridStrings
+        outputLines = zipWith (\ p1 p2 -> p1 ++ "    " ++ p2) finalGridStrings finalRouteStrings
+    mapM putStrLn outputLines
     putStrLn ""
 
 main = do
