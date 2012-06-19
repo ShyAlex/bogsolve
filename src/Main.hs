@@ -1,7 +1,7 @@
 import Data.Char(toLower, toUpper)
 import Data.List(group, intersperse, sort)
 import ShyAlex.Boggle
-import ShyAlex.List(groupN, padr)
+import ShyAlex.List(groupn, padr)
 import System.Environment(getArgs)
 
 getGridStrings :: Dice -> Dice -> [String]
@@ -9,7 +9,7 @@ getGridStrings allDice wordDice =
     let faces = map (\ d -> map (if d `elem` wordDice then toUpper else toLower) $ face d) allDice
         maxFaceWidth = maximum $ map length faces
         paddedFaces = map (padr (maxFaceWidth + 1) ' ') faces
-        groupedFaces = groupN 4 paddedFaces
+        groupedFaces = groupn 4 paddedFaces
     in map concat groupedFaces
 
 getRouteStrings :: Dice -> [String]

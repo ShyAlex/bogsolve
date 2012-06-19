@@ -26,7 +26,7 @@ getPoints word =
 	in points !! length word
 
 toDice :: [String] -> Dice
-toDice = toDice' 0 . groupN 4
+toDice = toDice' 0 . groupn 4
 
 toDice' :: Int -> [[String]] -> Dice
 toDice' _ [] = []

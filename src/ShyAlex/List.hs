@@ -1,6 +1,6 @@
 module ShyAlex.List
 (filterSorted
-,groupN
+,groupn
 ,mapi
 ,padr
 ,startsWith) where
@@ -8,9 +8,9 @@ module ShyAlex.List
 filterSorted :: (a -> Bool) -> [a] -> [a]
 filterSorted fil = takeWhile fil . dropWhile (not . fil)
 
-groupN :: Int -> [a] -> [[a]]
-groupN _ [] = []
-groupN i l = let (grp, l') = splitAt i l in grp : (groupN i l')
+groupn :: Int -> [a] -> [[a]]
+groupn _ [] = []
+groupn i l = let (grp, l') = splitAt i l in grp : (groupn i l')
 
 mapi :: (Int -> a -> b) -> [a] -> [b]
 mapi f = zipWith f [0..]
