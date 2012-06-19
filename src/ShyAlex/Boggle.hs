@@ -51,7 +51,7 @@ solve' wordDice availableDice activeDice dictionary = do
 	    activeDice' = delete die activeDice
 	    availableDice' = filter (isNeighbour die) activeDice'
 	    wordDice' = wordDice ++ [die]
-	    dictionary' = map (drop $ length dieFace) $ filter (startsWith dieFace) dictionary
+	    dictionary' = map (drop $ length dieFace) $ filterSorted (startsWith dieFace) dictionary
 	    isWord = any (== []) dictionary'
 	    dictionary'' = filter (/= []) dictionary'
 	    subDices = if dictionary'' /= [] && availableDice' /= [] then solve' wordDice' availableDice' activeDice' dictionary'' else []

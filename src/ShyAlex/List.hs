@@ -1,5 +1,6 @@
 module ShyAlex.List
-(groupN
+(filterSorted
+,groupN
 ,mapi
 ,padr
 ,startsWith) where
@@ -16,3 +17,6 @@ groupN i l = let (grp, l') = splitAt i l in grp : (groupN i l')
 
 startsWith :: Eq a => [a] -> [a] -> Bool
 startsWith xs ys = (length xs <= length ys) && (all id $ zipWith (==) xs ys)
+
+filterSorted :: (a -> Bool) -> [a] -> [a]
+filterSorted fil = takeWhile fil . dropWhile (not . fil)
