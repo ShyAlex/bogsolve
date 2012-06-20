@@ -26,13 +26,13 @@ Compile it by getting the source and running (from the source root):
 
 Then run it using the following:
 
-    bogsolve pathToDictionary boggleGrid
+    bogsolve pathToDictionary gridWidth boggleGrid
 
 E.g.
 
-    bogsolve ../web2 e g i b h o t n r s e r y p e qu
+    bogsolve ../web2 4 e g i b h o t n r s e r y p e qu
 
-You must specify at least one grid letter. A grid width of 4 is assumed. The above command outputs the following (given a dictionary containing all the relevant words):
+You must specify at least one grid letter. The above command outputs the following (given a dictionary containing all the relevant words):
 
     ...
     e  g  i  b      pry                             

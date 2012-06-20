@@ -25,8 +25,8 @@ getPoints word =
 	let points = [ 0, 0, 0, 1, 1, 2, 3, 5 ] ++ repeat 11
 	in points !! length word
 
-toDice :: [String] -> Dice
-toDice = toDice' 0 . groupn 4
+toDice :: Int -> [String] -> Dice
+toDice width = toDice' 0 . groupn width
 
 toDice' :: Int -> [[String]] -> Dice
 toDice' _ [] = []
