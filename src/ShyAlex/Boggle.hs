@@ -7,7 +7,7 @@ module ShyAlex.Boggle
 ,toDice
 ) where
 
-import Data.List(delete, group, sortBy)
+import Data.List(delete, group, isPrefixOf, sortBy)
 import ShyAlex.List
 
 type Dice = [Die]
@@ -51,7 +51,7 @@ solve' wordDice availableDice activeDice dictionary = do
 	    activeDice' = delete die activeDice
 	    availableDice' = filter (isNeighbour die) activeDice'
 	    wordDice' = wordDice ++ [die]
-	    dictionary' = map (drop $ length dieFace) $ filterSorted (startsWith dieFace) dictionary
+	    dictionary' = map (drop $ length dieFace) $ filterSorted (isPrefixOf dieFace) dictionary
 	    isWord = any (== []) dictionary'
 	    dictionary'' = filter (/= []) dictionary'
 	    subDices = if dictionary'' /= [] && availableDice' /= [] then solve' wordDice' availableDice' activeDice' dictionary'' else []

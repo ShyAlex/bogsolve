@@ -2,8 +2,7 @@ module ShyAlex.List
 (filterSorted
 ,groupn
 ,mapi
-,padr
-,startsWith) where
+,padr) where
 
 filterSorted :: (a -> Bool) -> [a] -> [a]
 filterSorted fil = takeWhile fil . dropWhile (not . fil)
@@ -17,6 +16,3 @@ mapi f = zipWith f [0..]
 
 padr :: Int -> a -> [a] -> [a]
 padr n x xs = xs ++ replicate (n - length xs) x
-
-startsWith :: Eq a => [a] -> [a] -> Bool
-startsWith xs ys = (length xs <= length ys) && (all id $ zipWith (==) xs ys)
